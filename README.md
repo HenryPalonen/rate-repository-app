@@ -1,2 +1,2 @@
 # rate-repository-app
-Full Stack Open, task 10
+Full Stack Open, Part 10
