@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'; // Import useContext here
+import React, { useContext, useEffect, useState  } from 'react'; // Import useContext here
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useQuery, useApolloClient } from '@apollo/client';
 import { GET_ME } from '../graphql/queries';
@@ -25,11 +25,20 @@ const styles = StyleSheet.create({
   
 
   const AppBar = () => {
-    const { data } = useQuery(GET_ME);
-    const isAuthenticated = data?.me;
+    const {data} = useQuery(GET_ME);
     const apolloClient = useApolloClient();
-    const authStorage = useContext(AuthStorageContext); // Using context
+    const authStorage = useContext(AuthStorageContext);
     const navigation = useNavigation();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+  
+    useEffect(() => {
+      const checkAuthStatus = async () => {
+        const token = await authStorage.getAccessToken();
+        setIsAuthenticated(!!token);
+      };
+  
+      checkAuthStatus();
+    }, [authStorage]);
   
     const handleSignOut = async () => {
       await authStorage.removeAccessToken();
@@ -37,24 +46,21 @@ const styles = StyleSheet.create({
       navigation.navigate('SignIn');
     };
   
-    //if (loading) return <View style={styles.container}><Text>Loading...</Text></View>;
-    //if (error) return <View style={styles.container}><Text>Error</Text></View>;
-  
     return (
-        <View style={styles.container}>
-          <ScrollView horizontal style={styles.scrollView} showsHorizontalScrollIndicator={false}>
-            <AppBarTab text="Repositories" screenName="RepositoryList" />
-            {isAuthenticated ? (
-              <AppBarTab text="Sign out" onPress={handleSignOut} />
-            ) : (
-              <>
-                <AppBarTab text="Sign in" screenName="SignIn" />
-                <AppBarTab text="Sign up" screenName="SignUp" />
-              </>
-            )}
-          </ScrollView>
-        </View>
-      );
+      <View style={styles.container}>
+        <ScrollView horizontal style={styles.scrollView} showsHorizontalScrollIndicator={false}>
+          <AppBarTab text="Repositories" screenName="RepositoryList" />
+          {isAuthenticated ? (
+            <AppBarTab text="Sign out" onPress={handleSignOut} />
+          ) : (
+            <>
+              <AppBarTab text="Sign in" screenName="SignIn" />
+              <AppBarTab text="Sign up" screenName="SignUp" />
+            </>
+          )}
+        </ScrollView>
+      </View>
+    );
   };
   
   export default AppBar;
