@@ -1,6 +1,8 @@
 import React from 'react';
 import { FlatList, View, StyleSheet } from 'react-native';
 import RepositoryItem from './RepositoryItem'; // Make sure to import the RepositoryItem component
+import useRepositories from '../hooks/useRepositories';
+
 
 const styles = StyleSheet.create({
   separator: {
@@ -8,6 +10,28 @@ const styles = StyleSheet.create({
   },
 });
 
+
+const ItemSeparator = () => <View style={styles.separator} />;
+
+const RepositoryList = () => {
+  const { repositories } = useRepositories();
+  console.log('Rendering RepositoryList');
+
+  return (
+    <FlatList
+      data={repositories}
+      ItemSeparatorComponent={ItemSeparator}
+      renderItem={({ item }) => <RepositoryItem item={item} />}
+      keyExtractor={item => item.id}
+    />
+  );
+};
+
+export default RepositoryList;
+
+
+// this is replaced with queries 
+/* 
 const repositories = [
     {
       id: 'jaredpalmer.formik',
@@ -55,18 +79,6 @@ const repositories = [
     },
   ];
   
+*/
 
-const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepositoryList = () => {
-  return (
-    <FlatList
-      data={repositories}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={({ item }) => <RepositoryItem item={item} />}
-      keyExtractor={item => item.id}
-    />
-  );
-};
-
-export default RepositoryList;

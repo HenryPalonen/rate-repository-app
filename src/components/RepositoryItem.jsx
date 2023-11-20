@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
 const formatCount = count => count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count.toString();
 
 const RepositoryItem = ({ item }) => {
+  console.log(item.fullName)
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
