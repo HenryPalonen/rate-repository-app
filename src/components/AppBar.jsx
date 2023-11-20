@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'; // Import useContext here
-import { View, StyleSheet, ScrollView, Text } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { useQuery, useApolloClient } from '@apollo/client';
 import { GET_ME } from '../graphql/queries';
 import Constants from 'expo-constants';
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   
 
   const AppBar = () => {
-    const { loading, error, data } = useQuery(GET_ME);
+    const { data } = useQuery(GET_ME);
     const isAuthenticated = data?.me;
     const apolloClient = useApolloClient();
     const authStorage = useContext(AuthStorageContext); // Using context
