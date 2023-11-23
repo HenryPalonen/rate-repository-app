@@ -26,11 +26,13 @@ const SignUpContainer = ({ onSubmit }) => {
         const errors = {};
         if (!values.username) {
           errors.username = 'Username is required';
+        }else if (values.username.length < 5 || values.username.length > 30) {
+          errors.password = 'Username must be between 5 and 30 characters';
         }
         if (!values.password) {
           errors.password = 'Password is required';
-        } else if (values.password.length < 4 || values.password.length > 40) {
-          errors.password = 'Password must be between 4 and 40 characters';
+        } else if (values.password.length < 5 || values.password.length > 50) {
+          errors.password = 'Password must be between 5 and 50 characters';
         }
         if (values.password !== values.confirmPassword) {
           errors.confirmPassword = 'Passwords do not match';

@@ -33,6 +33,7 @@ const FormikTextInput = ({ name, ...props }) => {
         onChangeText={value => helpers.setValue(value)}
         onBlur={() => helpers.setTouched(true)}
         value={field.value}
+        autoCapitalize="none"  
         {...props}
       />
       {showError && <Text style={formikStyles.errorText}>{meta.error}</Text>}

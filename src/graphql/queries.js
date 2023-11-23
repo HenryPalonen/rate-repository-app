@@ -68,3 +68,37 @@ export const GET_ME = gql`
     username
   }
 }`;
+
+export const ME = gql`
+query Me(
+  $includeReviews: Boolean = false
+  $reviewsFirst: Int
+  $reviewsAfter: String
+) {
+  me {
+    id
+    username
+    createdAt
+    reviews(first: $reviewsFirst, after: $reviewsAfter) @include(if: $includeReviews) {
+      edges {
+        node {
+          id
+          text
+          rating
+          createdAt
+          repository {
+            id
+            fullName
+          }
+        }
+        cursor
+      }
+      pageInfo {
+        endCursor
+        startCursor
+        hasNextPage
+      }
+    }
+  }
+}
+`;

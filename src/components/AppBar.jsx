@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState  } from 'react'; // Import useContext here
+import React, { useContext, useEffect  } from 'react'; // Import useContext here
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { useQuery, useApolloClient } from '@apollo/client';
 import { GET_ME } from '../graphql/queries';
@@ -23,45 +23,43 @@ const styles = StyleSheet.create({
     },
   });
   
+const AppBar = () => {
+  const { data, refetch } = useQuery(GET_ME);
+  const apolloClient = useApolloClient();
+  const authStorage = useContext(AuthStorageContext);
+  const navigation = useNavigation();
+  const isAuthenticated = !!data?.me;
 
-  const AppBar = () => {
-    const {data} = useQuery(GET_ME);
-    const apolloClient = useApolloClient();
-    const authStorage = useContext(AuthStorageContext);
-    const navigation = useNavigation();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
-    useEffect(() => {
-      const checkAuthStatus = async () => {
-        const token = await authStorage.getAccessToken();
-        setIsAuthenticated(!!token);
-      };
-  
-      checkAuthStatus();
-    }, [authStorage]);
-  
-    const handleSignOut = async () => {
-      await authStorage.removeAccessToken();
-      await apolloClient.resetStore();
-      navigation.navigate('SignIn');
-    };
-  
-    return (
-      <View style={styles.container}>
-        <ScrollView horizontal style={styles.scrollView} showsHorizontalScrollIndicator={false}>
-          <AppBarTab text="Repositories" screenName="RepositoryList" />
-          {isAuthenticated ? (
-            <AppBarTab text="Sign out" onPress={handleSignOut} />
-          ) : (
-            <>
-              <AppBarTab text="Sign in" screenName="SignIn" />
-              <AppBarTab text="Sign up" screenName="SignUp" />
-            </>
-          )}
-        </ScrollView>
-      </View>
-    );
+  useEffect(() => {
+    refetch();
+  }, [authStorage, refetch]);
+
+  const handleSignOut = async () => {
+    await authStorage.removeAccessToken();
+    await apolloClient.resetStore();
+    navigation.navigate('SignIn');
+    refetch();
   };
+
+  return (
+    <View style={styles.container}>
+      <ScrollView horizontal style={styles.scrollView} showsHorizontalScrollIndicator={false}>
+        <AppBarTab text="Repositories" screenName="RepositoryList" />
+        {isAuthenticated && <AppBarTab text="Create review" screenName="Review" />}
+        {isAuthenticated && <AppBarTab text="My reviews" screenName="MyReviews" />}
+        {isAuthenticated ? (
+          <AppBarTab text="Sign out" onPress={handleSignOut} />
+        ) : (
+          <>
+            <AppBarTab text="Sign in" screenName="SignIn" />
+            <AppBarTab text="Sign up" screenName="SignUp" />
+          </>
+        )}
+      </ScrollView>
+    </View>
+  );
+};
+
   
   export default AppBar;
 

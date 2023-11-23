@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Button } from 'react-native';
+import * as Linking from 'expo-linking';
 
 const styles = StyleSheet.create({
-  ccontainer: {
+  container: {
     backgroundColor: 'white',
     padding: 10,
   },
@@ -28,6 +29,10 @@ const styles = StyleSheet.create({
   countItem: {
     alignItems: 'center',
   },
+  buttonContainer: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
   languageBadge: {
     backgroundColor: '#0366d6', // Or use theme.colors.primary
     color: 'white',
@@ -40,8 +45,10 @@ const styles = StyleSheet.create({
 
 const formatCount = count => count >= 1000 ? `${(count / 1000).toFixed(1)}k` : count.toString();
 
-const RepositoryItem = ({ item }) => {
-  console.log(item.fullName)
+const RepositoryItem = ({ item, showGitHubButton = false }) => {
+  const handleOpenInGitHub = () => {
+    Linking.openURL(item.url);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.topContainer}>
@@ -70,6 +77,11 @@ const RepositoryItem = ({ item }) => {
           <Text>{formatCount(item.ratingAverage)}</Text>
         </View>
       </View>
+      {showGitHubButton && (
+        <View style={styles.buttonContainer}>
+          <Button title="Open in GitHub" onPress={handleOpenInGitHub} />
+        </View>
+      )}
     </View>
   );
 };
